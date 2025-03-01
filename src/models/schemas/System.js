@@ -61,6 +61,26 @@ const SystemSchema = new Schema({
           },
         ],
       },
+      content: {
+        available: { type: Boolean, default: true },
+        service: {
+          available: { type: Boolean, default: true },
+        },
+        maintenance: {
+          status: { type: Boolean, default: false },
+          message: { type: String, default: 'Page is under maintenance. Please try again later.' },
+        },
+        permission: {
+          roles: [
+            {
+              type: String,
+              enum: roles,
+              required: true,
+              default: ['user'],
+            },
+          ],
+        },
+      },
     },
   ],
 });
