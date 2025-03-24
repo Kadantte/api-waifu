@@ -102,12 +102,13 @@ export const requestLogger = async (req, res, next) => {
     hook.send(`\`${log}\``);
     console.log(log);
 
-    console.log(endpoint);
     // Ignore invalid endpoints
     if (!validEndpoints.has(endpoint)) return next();
 
     res.on('finish', async () => {
+      const failedStatusCodes = new Set([400, 402, 404, 502]);
       const isSuccess = res.statusCode >= 200 && res.statusCode < 400;
+      const isFailure = failedStatusCodes.has(res.statusCode);
 
       const update = {
         $inc: {
@@ -120,6 +121,10 @@ export const requestLogger = async (req, res, next) => {
           [`endpoints.${endpoint}`]: 1,
         },
       };
+      // Increment failed_requests only for specific failure codes
+      if (isFailure) {
+        update.$inc.failed_requests = 1;
+      }
 
       // console.log(update);
 
