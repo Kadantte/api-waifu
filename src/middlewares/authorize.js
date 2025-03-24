@@ -189,7 +189,7 @@ const isEndpointEnabledInStats = async endpoint => {
  * @throws {Error} Throws an error if there is an issue with updating statistics.
  */
 const incrementSystemStats = async stats => {
-  await Stats.findByIdAndUpdate({ _id: 'systemstats' }, { $inc: stats });
+  await Stats.findByIdAndUpdate({ _id: 'system' }, { $inc: stats });
 };
 
 /**
