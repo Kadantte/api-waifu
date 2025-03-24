@@ -94,7 +94,7 @@ export const requestLogger = async (req, res, next) => {
     const now = new Date();
     const dateKey = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
     const pathSegments = req.path.split('/').filter(Boolean); // Remove empty segments
-    const endpoint = pathSegments.length > 2 ? pathSegments[pathSegments.length - 2] : pathSegments.pop();
+    const endpoint = pathSegments[2];
 
     const IMAGE_URL = 'https://i.imgur.com/c55SNmu.png';
     hook.setUsername('API Logger');
