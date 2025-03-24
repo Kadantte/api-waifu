@@ -185,7 +185,7 @@ const processUserAction = async (req, res, next) => {
 const processUserSessionAndUpdate = async (req, res, next) => {
   try {
     const { headers, body } = req;
-    const { token, id, email, 'access-token': access_token } = body;
+    const { token, id, email, username, 'access-token': access_token } = body;
     const { key } = headers;
 
     // Validate access key
@@ -214,6 +214,7 @@ const processUserSessionAndUpdate = async (req, res, next) => {
       const newUser = {
         _id: id,
         email,
+        username,
         token: generatedToken,
         access_token,
         password: crypto.randomBytes(22).toString('base64'), // Generate a random password

@@ -12,6 +12,12 @@ const UserSchema = new mongoose.Schema({
   _id: { type: String },
 
   /**
+   * User's username.
+   * @type {string}
+   *
+   */
+  username: { type: String },
+  /**
    * User's email address.
    * @type {string}
    * @required
