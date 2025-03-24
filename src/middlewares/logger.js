@@ -106,7 +106,7 @@ export const requestLogger = async (req, res, next) => {
     if (!validEndpoints.has(endpoint)) return next();
 
     res.on('finish', async () => {
-      const failedStatusCodes = new Set([400, 402, 404, 502]);
+      const failedStatusCodes = new Set([400, 401, 402, 404, 502]);
       const isSuccess = res.statusCode >= 200 && res.statusCode < 400;
       const isFailure = failedStatusCodes.has(res.statusCode);
 
