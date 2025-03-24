@@ -145,8 +145,10 @@ const authorize = requiredRole => async (req, res, next) => {
  * @returns {string} - The extracted endpoint.
  */
 const getEndpointFromUrl = url => {
-  const urlSegments = url.split('/');
-  return urlSegments[urlSegments.length - 1]; // Last segment is assumed to be the endpoint
+  const urlSegments = url.split('?')[0].split('/').filter(Boolean); // Remove query & empty segments
+  const versionIndex = urlSegments.findIndex(segment => /^v\d+$/.test(segment)); // Find "vX" (e.g., v3, v4, v5)
+
+  return versionIndex !== -1 && versionIndex + 1 < urlSegments.length ? urlSegments[versionIndex + 1] : null;
 };
 
 /**
