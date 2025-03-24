@@ -121,7 +121,7 @@ export const requestLogger = async (req, res, next) => {
         },
       };
 
-      console.log(update);
+      // console.log(update);
 
       await Stats.findOneAndUpdate({ _id: 'system' }, update, { upsert: true });
     });
