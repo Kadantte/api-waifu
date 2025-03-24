@@ -93,7 +93,8 @@ export const requestLogger = async (req, res, next) => {
     } | ${requestIp.getClientIp(req)} - URL=${req.originalUrl} - ${auth}\n`;
     const now = new Date();
     const dateKey = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
-    const endpoint = req.path.split('/').pop(); // Extracts last part of the path
+    const pathSegments = req.path.split('/').filter(Boolean); // Remove empty segments
+    const endpoint = pathSegments.length > 2 ? pathSegments[pathSegments.length - 2] : pathSegments.pop();
 
     const IMAGE_URL = 'https://i.imgur.com/c55SNmu.png';
     hook.setUsername('API Logger');
@@ -101,6 +102,7 @@ export const requestLogger = async (req, res, next) => {
     hook.send(`\`${log}\``);
     console.log(log);
 
+    console.log(endpoint);
     // Ignore invalid endpoints
     if (!validEndpoints.has(endpoint)) return next();
 
@@ -119,7 +121,9 @@ export const requestLogger = async (req, res, next) => {
         },
       };
 
-      await Stats.findOneAndUpdate({ _id: 'systemstats' }, update, { upsert: true });
+      console.log(update);
+
+      await Stats.findOneAndUpdate({ _id: 'system' }, update, { upsert: true });
     });
 
     next();
