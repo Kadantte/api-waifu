@@ -46,13 +46,12 @@ const getOwoifyText = async (req, res, next) => {
      * Update system statistics for Owofied texts
      * @type {Object}
      */
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { owoify: 1 } });
   } catch (error) {
     /**
      * Update system statistics for failed requests
      * @type {Object}
      */
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { failed_requests: 1 } });
+
     return next(error);
   }
 };

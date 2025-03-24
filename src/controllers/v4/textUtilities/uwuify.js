@@ -25,10 +25,9 @@ const getUwuifyText = async (req, res, next) => {
     });
 
     // Increment the UwUify counter in the stats
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { uwuify: 1 } });
   } catch (error) {
     // Increment failed requests counter in the stats and pass the error to the next middleware
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { failed_requests: 1 } });
+
     next(error);
   }
 };

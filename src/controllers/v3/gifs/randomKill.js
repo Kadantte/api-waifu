@@ -1,4 +1,3 @@
-
 import createError from 'http-errors';
 import Kill from '../../../models/schemas/Kill.js';
 import Stats from '../../../models/schemas/Stat.js';
@@ -16,14 +15,8 @@ const getRandomKill = async (req, res, next) => {
       return next(createError(404, 'Could not find any Kill Gif'));
     }
 
-    res.status(200).json(result);
-
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { kill: 1 } });
+    return res.status(200).json(result);
   } catch (error) {
-    await Stats.findOneAndUpdate(
-      { _id: 'systemstats' },
-      { $inc: { failed_requests: 1 } }
-    );
     return next(error);
   }
 };

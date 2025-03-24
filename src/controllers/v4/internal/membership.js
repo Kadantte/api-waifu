@@ -47,7 +47,7 @@ const getMembership = async (req, res, next) => {
       return next(createError(404, 'No membership data found'));
     }
 
-    res.status(200).json(result);
+    return res.status(200).json(result);
   } catch (error) {
     return next(error);
   }

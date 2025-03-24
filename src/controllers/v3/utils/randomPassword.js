@@ -27,16 +27,9 @@ const getRandomPassword = async (req, res, next) => {
     });
 
     // Update system statistics for generated passwords
-    await Stats.findOneAndUpdate(
-      { _id: 'systemstats' },
-      { $inc: { password: 1 } }
-    );
   } catch (error) {
     // Update system statistics for failed requests
-    await Stats.findOneAndUpdate(
-      { _id: 'systemstats' },
-      { $inc: { failed_requests: 1 } }
-    );
+
     return next(error);
   }
 };

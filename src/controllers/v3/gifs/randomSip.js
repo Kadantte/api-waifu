@@ -1,4 +1,3 @@
-
 import createError from 'http-errors';
 import Sip from '../../../models/schemas/Sip.js';
 import Stats from '../../../models/schemas/Stat.js';
@@ -16,14 +15,8 @@ const getRandomSip = async (req, res, next) => {
       return next(createError(404, 'Could not find any Sip Gif'));
     }
 
-    res.status(200).json(result);
-
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { sip: 1 } });
+    return res.status(200).json(result);
   } catch (error) {
-    await Stats.findOneAndUpdate(
-      { _id: 'systemstats' },
-      { $inc: { failed_requests: 1 } }
-    );
     return next(error);
   }
 };

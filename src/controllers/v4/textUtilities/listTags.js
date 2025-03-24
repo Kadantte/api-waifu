@@ -67,13 +67,12 @@ const listTags = async (req, res, next) => {
     res.json(results);
 
     // Update system statistics for tags
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { tags: 1 } });
   } catch (error) {
     /**
      * Update system statistics for failed requests
      * @type {Object}
      */
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { failed_requests: 1 } });
+
     return next(error);
   }
 };

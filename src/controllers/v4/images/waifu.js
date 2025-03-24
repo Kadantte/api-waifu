@@ -87,16 +87,15 @@ const getWaifu = async (req, res, next) => {
      * @property {Number} statistics.upvote - Number of upvotes for the waifu.
      * @property {Number} statistics.downvote - Number of downvotes for the waifu.
      */
-    res.status(200).json(result);
+    return res.status(200).json(result);
 
     // Update system statistics for waifus
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { waifus: 1 } });
   } catch (error) {
     /**
      * Update system statistics for failed requests
      * @type {Object}
      */
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { failed_requests: 1 } });
+
     next(error);
   }
 };
