@@ -14,6 +14,12 @@ const getPopularEndpoints = async (req, res, next) => {
   try {
     const { top } = req.query;
     const [start, end] = parseTopParam(top);
+    const key = req.headers.key;
+
+    // Check for valid access key in headers
+    if (!key || key !== process.env.ACCESS_KEY) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
 
     // ✅ Use .lean() to get a plain object
     const stats = await Stat.findOne({ _id: 'system' }, { endpoints: 1 }).lean();
@@ -38,6 +44,12 @@ const getTopEndpointsToday = async (req, res, next) => {
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
     const { top } = req.query;
     const [start, end] = parseTopParam(top);
+    const key = req.headers.key;
+
+    // Check for valid access key in headers
+    if (!key || key !== process.env.ACCESS_KEY) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
 
     // ✅ Use .lean() to get a plain object
     const stats = await Stat.findOne({ _id: 'system' }, { daily: 1 }).lean();
@@ -69,6 +81,12 @@ const getMonthlyRequests = async (req, res, next) => {
   try {
     const now = new Date();
     const last5Months = [];
+    const key = req.headers.key;
+
+    // Check for valid access key in headers
+    if (!key || key !== process.env.ACCESS_KEY) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
 
     for (let i = 0; i < 5; i++) {
       const date = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1)); // Ensure UTC consistency
