@@ -9,7 +9,7 @@ import {
   logErrors /*** @params: err, req, res, next ***/,
   errorHandler /*** @params: err, req, res, next ***/,
 } from './middlewares/errors.js';
-import { logIP } from './middlewares/logger.js';
+import { requestLogger } from './middlewares/logger.js';
 import routesV3 from './routes/v3/index.js';
 import routesV4 from './routes/v4/index.js';
 
@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: true }));
  * @param {Function} next - Express next middleware function.
  */
 if (process.env.LOGGER === 'true') {
-  app.use(logIP);
+  app.use(requestLogger);
 }
 
 /*** Middleware to parse the request body ***/
