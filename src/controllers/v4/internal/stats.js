@@ -85,7 +85,7 @@ const getMonthlyRequests = async (req, res, next) => {
 
     // Check for valid access key in headers
     if (!key || key !== process.env.ACCESS_KEY) {
-      // return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
     for (let i = 4; i >= 0; i--) {
@@ -126,6 +126,11 @@ const getUsersStat = async (req, res, next) => {
   try {
     const { type, top } = req.query;
     const [start, end] = parseTopParam(top);
+    const key = req.headers.key;
+
+    if (!key || key !== process.env.ACCESS_KEY) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
 
     // ✅ Validate Type
     if (!['quota', 'requests'].includes(type)) {
