@@ -2,7 +2,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import pkg from '../package.json' assert { type: 'json' };
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const pkg = require('../package.json');
 /*** Importing custom error handlers and logger middleware ***/
 import {
   handle404 /*** @params: req, res, next ***/,
