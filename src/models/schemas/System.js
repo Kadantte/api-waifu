@@ -65,6 +65,7 @@ const SystemSchema = new Schema({
         available: { type: Boolean, default: true },
         service: {
           available: { type: Boolean, default: true },
+          message: String,
         },
         maintenance: {
           status: { type: Boolean, default: false },
