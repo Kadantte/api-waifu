@@ -46,7 +46,11 @@ const processUserAction = async (req, res, next) => {
   }
 
   const userId = req.params.id;
-  const { action, amount, reason, executor, expiry } = req.body; // Extract fields from the request body
+  const { action, amount, reason, executor, expiry, old_token, new_token, isForced } = req.body; // Extract fields from the request body
+
+  if (!action) {
+    return res.status(400).json({ message: 'Action is required in body' }); // Action is required
+  }
 
   try {
     // Fetch user by ID
@@ -149,6 +153,24 @@ const processUserAction = async (req, res, next) => {
           reason: reason || 'Token updated',
           value: token,
           executor: executor || 'system',
+        });
+
+        updatedUser = await user.save();
+        break;
+
+      case 'addtokenhistory':
+        if (!old_token && !new_token) {
+          return res.status(400).json({ message: 'Old and new tokens are required' });
+        }
+        // Update status history
+        user.token_history.push({
+          _id: user.token_history.length + 1,
+          timestamp: new Date(),
+          reason: reason || 'Self Regenerated',
+          executor: executor || 'Self',
+          isForced: isForced || false,
+          old_token,
+          new_token,
         });
 
         updatedUser = await user.save();
