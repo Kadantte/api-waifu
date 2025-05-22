@@ -66,7 +66,7 @@ const markNotificationAsRead = async (req, res) => {
         return res.status(400).json({ message: 'User ID is required' });
       }
       // Check if the global notification exists
-      const notificationExists = await Notification.exists({ _id: id });
+      const notificationExists = await Notification.exists({ _id: { $eq: id } });
       if (!notificationExists) {
         return res.status(404).json({ message: 'Global notification not found' });
       }
@@ -79,7 +79,7 @@ const markNotificationAsRead = async (req, res) => {
       );
     } else {
       // Update read status for user-specific notifications
-      await UserNotification.findOneAndUpdate({ _id: id }, { read: true });
+      await UserNotification.findOneAndUpdate({ _id: { $eq: id } }, { read: true });
     }
 
     return res.status(200).json({ message: 'Notification marked as read' });
@@ -111,7 +111,7 @@ const markNotificationAsDeleted = async (req, res) => {
         return res.status(400).json({ message: 'User ID is required' });
       }
       // Check if the global notification exists
-      const notificationExists = await Notification.exists({ _id: id });
+      const notificationExists = await Notification.exists({ _id: { $eq: id } });
       if (!notificationExists) {
         return res.status(404).json({ message: 'Global notification not found' });
       }
@@ -124,7 +124,7 @@ const markNotificationAsDeleted = async (req, res) => {
       );
     } else {
       // Update deleted status for user-specific notifications
-      await UserNotification.findOneAndUpdate({ _id: id }, { deleted: true });
+      await UserNotification.findOneAndUpdate({ _id: { $eq: id } }, { deleted: true });
     }
 
     return res.status(200).json({ message: 'Notification marked as deleted' });
