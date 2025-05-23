@@ -84,6 +84,33 @@ const SystemSchema = new Schema({
       },
     },
   ],
+  rewards: [
+    {
+      _id: { type: String, required: true, unique: true }, // Unique code like "SUMMER2025"
+      type: { type: String, enum: ['giftcard', 'coupon', 'voucher'], required: true },
+      description: String,
+      discount: {
+        type: { type: String, enum: ['percentage', 'fixed'], required: true },
+        value: { type: Number, required: true }, // e.g., 20 for 20% or $20
+      },
+      appliesTo: {
+        plans: [String], // Array of plan IDs it can be applied to, if any
+        roles: [String], // Optionally apply by role
+      },
+      usage: {
+        maxRedemptions: { type: Number, default: 1 }, // How many times this code can be used globally
+        usedBy: [
+          {
+            userId: String,
+            redeemedAt: Date,
+          },
+        ],
+      },
+      validFrom: Date,
+      validUntil: Date,
+      isActive: { type: Boolean, default: true },
+    },
+  ],
 });
 
 export default model('System', SystemSchema);
