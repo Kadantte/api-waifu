@@ -66,4 +66,23 @@ router
    */
   .get(createRateLimiter(), getRewards);
 
+router.route('/redeem');
+/**
+ * @api {post} v4/rewards/redeem Redeem a Reward
+ * @apiDescription Redeem a reward using its unique ID.
+ * @apiName redeemReward
+ * @apiGroup Rewards
+ * @apiPermission user
+ *
+ * @apiHeader {String} Key Internal access token
+ *
+ * @apiBody {String} id Unique ID of the reward to redeem.
+ *
+ * @apiSuccess {Object} result Redemption result.
+ * @apiError (Bad Request 400) BadRequest Missing or invalid fields.
+ * @apiError (Not Found 404) NotFound Reward with the given ID does not exist.
+ * @apiError (Unauthorized 401) Unauthorized Invalid or missing access key.
+ * @apiError (Internal Server Error 500) InternalServerError An error occurred while redeeming reward.
+ */
+
 export default router;
