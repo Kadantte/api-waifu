@@ -1256,6 +1256,21 @@ import pageRoutes from './internal/pages.js';
  */
 router.use('/pages', pageRoutes);
 
+import rewardsRoutes from './internal/rewards.js';
+/**
+ * @api {use} Mount Rewards Routes
+ * @apiDescription Mount the rewards-related routes for handling interactions.
+ * @apiName UseRewardsRoutes
+ * @apiGroup Routes
+ *
+ * @apiSuccess {Object} routes Rewards-related routes mounted on the parent router.
+ *
+ * @function createRewardsRoutes
+ * @description Creates and returns a set of routes for handling interactions related to rewards.
+ * @returns {Object} Rewards-related routes.
+ */
+router.use('/rewards', rewardsRoutes);
+
 /**
  * Exporting the router for use in other parts of the application.
  * @exports {Router} router - Express Router instance with mounted routes.
