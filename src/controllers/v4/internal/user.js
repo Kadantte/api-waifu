@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import Users from '../../../models/schemas/User.js';
+import UserNotification from '../../../models/schemas/UserNotification.js';
 import generateToken from '../../../modules/generateToken.js';
 
 /**
@@ -241,8 +242,16 @@ const processUserSessionAndUpdate = async (req, res, next) => {
         access_token,
         password: crypto.randomBytes(22).toString('base64'), // Generate a random password
       };
+      const newUserNotification = {
+        _id: `U${(await UserNotification.countDocuments()) + 1}`,
+        userId: id,
+        type: 'success',
+        message: `🎉 Welcome abroad!`,
+        expiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      };
 
       await Users.create(newUser);
+      await UserNotification.create(newUserNotification);
 
       return res.status(201).json({
         message: 'User created successfully',
