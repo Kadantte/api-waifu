@@ -47,7 +47,7 @@ const processUserAction = async (req, res, next) => {
   }
 
   const userId = req.params.id;
-  const { action, amount, reason, executor, expiry, old_token, new_token, isForced } = req.body; // Extract fields from the request body
+  const { action, amount, reason, value, executor, expiry, old_token, new_token, isForced } = req.body; // Extract fields from the request body
 
   if (!action) {
     return res.status(400).json({ message: 'Action is required in body' }); // Action is required
@@ -75,7 +75,7 @@ const processUserAction = async (req, res, next) => {
           _id: user.status_history.length + 1,
           timestamp: new Date(),
           reason: reason || 'Quota added',
-          value: `+${amount} quota`,
+          value: value || `+${amount} quota`,
           executor: executor || 'system',
         });
 
@@ -96,7 +96,7 @@ const processUserAction = async (req, res, next) => {
           _id: user.status_history.length + 1,
           timestamp: new Date(),
           reason: reason || 'Quota removed',
-          value: `-${amount} quota`,
+          value: value || `-${amount} quota`,
           executor: executor || 'system',
         });
 
