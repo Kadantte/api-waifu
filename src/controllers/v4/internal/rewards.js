@@ -20,7 +20,7 @@ export const getRewards = async (req, res) => {
     }
 
     // Fetch only the rewards field
-    const system = await System.findById('sudo').select('rewards');
+    const system = await System.findById('system').select('rewards');
 
     if (!system || !Array.isArray(system.rewards)) {
       return res.status(404).json({ message: 'No rewards found' });
@@ -69,7 +69,7 @@ export const createReward = async (req, res) => {
       return res.status(400).json({ message: 'Missing required reward fields' });
     }
 
-    const system = await System.findById('sudo');
+    const system = await System.findById('system');
     if (!system) {
       return res.status(404).json({ message: 'System not found' });
     }
@@ -125,7 +125,7 @@ export const redeemReward = async (req, res) => {
     }
 
     // Find the system document (assuming you have only one system doc)
-    const system = await System.findById('sudo').select('rewards');
+    const system = await System.findById('system').select('rewards');
     if (!system) {
       return res.status(500).json({ message: 'System configuration not found for rewards' });
     }
