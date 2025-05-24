@@ -15,12 +15,12 @@ export const getRewards = async (req, res) => {
     const { type } = req.query;
 
     // Authorization check
-    // if (!key || key !== process.env.ACCESS_KEY) {
-    //   return res.status(401).json({ message: 'Unauthorized' });
-    // }
+    if (!key || key !== process.env.ACCESS_KEY) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
 
     // Fetch only the rewards field
-    const system = await System.findById('system').select('rewards');
+    const system = await System.findById('sudo').select('rewards');
 
     if (!system || !Array.isArray(system.rewards)) {
       return res.status(404).json({ message: 'No rewards found' });
@@ -28,7 +28,7 @@ export const getRewards = async (req, res) => {
 
     // If an ID is provided, return that specific reward
     if (id) {
-      const reward = system.rewards.find(r => r._id === id);
+      const reward = system.rewards.find(r => r._id === id.toUpperCase());
       if (!reward) {
         return res.status(404).json({ message: 'Reward not found' });
       }
@@ -69,7 +69,7 @@ export const createReward = async (req, res) => {
       return res.status(400).json({ message: 'Missing required reward fields' });
     }
 
-    const system = await System.findById('system');
+    const system = await System.findById('sudo');
     if (!system) {
       return res.status(404).json({ message: 'System not found' });
     }
@@ -125,7 +125,7 @@ export const redeemReward = async (req, res) => {
     }
 
     // Find the system document (assuming you have only one system doc)
-    const system = await System.findById('system').select('rewards');
+    const system = await System.findById('sudo').select('rewards');
     if (!system) {
       return res.status(500).json({ message: 'System configuration not found for rewards' });
     }
