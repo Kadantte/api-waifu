@@ -1,7 +1,5 @@
-
 import createError from 'http-errors';
 import Angry from '../../../models/schemas/Angry.js';
-import Stats from '../../../models/schemas/Stat.js';
 
 // Get random Anime Angry
 const getRandomAngry = async (req, res, next) => {
@@ -16,14 +14,8 @@ const getRandomAngry = async (req, res, next) => {
       return next(createError(404, 'Could not find any Angry Gif'));
     }
 
-    res.status(200).json(result);
-
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { angry: 1 } });
+   return res.status(200).json(result);
   } catch (error) {
-    await Stats.findOneAndUpdate(
-      { _id: 'systemstats' },
-      { $inc: { failed_requests: 1 } }
-    );
     return next(error);
   }
 };

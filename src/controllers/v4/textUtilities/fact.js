@@ -71,16 +71,15 @@ const getFact = async (req, res, next) => {
      * @property {Array<String>} tags - Array of tags associated with the fact.
      * @property {Number} length - The length of the fact.
      */
-    res.status(200).json(result);
+    return res.status(200).json(result);
 
     // Update system statistics for facts
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { facts: 1 } });
   } catch (error) {
     /**
      * Update system statistics for failed requests
      * @type {Object}
      */
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { failed_requests: 1 } });
+
     return next(error);
   }
 };

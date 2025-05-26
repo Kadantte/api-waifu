@@ -10,11 +10,8 @@ const getRandomWaifu = async (req, res, next) => {
       { $project: { __v: 0 } },
     ]);
 
-    res.status(200).json(result);
-
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { waifus: 1 } });
+    return res.status(200).json(result);
   } catch (error) {
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { failed_requests: 1 } });
     next(error);
   }
 };

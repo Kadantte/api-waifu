@@ -1224,6 +1224,53 @@ import membershipRoutes from './internal/membership.js';
  */
 router.use('/membership', membershipRoutes);
 
+import notificationRoutes from './internal/notifications.js';
+
+/**
+ * @api {use} Mount Membership Routes
+ * @apiDescription Mount the membership-related routes for handling interactions.
+ * @apiName UseMembershipRoutes
+ * @apiGroup Routes
+ *
+ * @apiSuccess {Object} routes Membership-related routes mounted on the parent router.
+ *
+ * @function createMembershipRoutes
+ * @description Creates and returns a set of routes for handling interactions related to Membership.
+ * @returns {Object} Membership-related routes.
+ */
+router.use('/notifications', notificationRoutes);
+
+import pageRoutes from './internal/pages.js';
+
+/**
+ * @api {use} Mount Pages Routes
+ * @apiDescription Mount the pages-related routes for handling page interactions.
+ * @apiName UsePagesRoutes
+ * @apiGroup Routes
+ *
+ * @apiSuccess {Object} routes Pages-related routes mounted on the parent router.
+ *
+ * @function createPagesRoutes
+ * @description Creates and returns a set of routes for handling interactions related to pages.
+ * @returns {Object} Pages-related routes.
+ */
+router.use('/pages', pageRoutes);
+
+import rewardsRoutes from './internal/rewards.js';
+/**
+ * @api {use} Mount Rewards Routes
+ * @apiDescription Mount the rewards-related routes for handling interactions.
+ * @apiName UseRewardsRoutes
+ * @apiGroup Routes
+ *
+ * @apiSuccess {Object} routes Rewards-related routes mounted on the parent router.
+ *
+ * @function createRewardsRoutes
+ * @description Creates and returns a set of routes for handling interactions related to rewards.
+ * @returns {Object} Rewards-related routes.
+ */
+router.use('/rewards', rewardsRoutes);
+
 /**
  * Exporting the router for use in other parts of the application.
  * @exports {Router} router - Express Router instance with mounted routes.

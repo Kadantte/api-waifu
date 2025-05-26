@@ -29,13 +29,12 @@ const getRandomQuote = async (req, res, next) => {
     }
 
     // Respond with the random quote
-    res.status(200).json(result);
+    return res.status(200).json(result);
 
     // Update system statistics for quotes
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { quotes: 1 } });
   } catch (error) {
     // Update system statistics for failed requests
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { failed_requests: 1 } });
+
     return next(error);
   }
 };

@@ -2,7 +2,6 @@ import createError from 'http-errors';
 import Facts from '../../../models/schemas/Fact.js';
 import tagsFilter from '../../../modules/tagsFilter.js';
 import lengthFilter from '../../../modules/lengthFilter.js';
-import Stats from '../../../models/schemas/Stat.js';
 
 /**
  * Gets a random anime fact with optional length and tags filters and updates system statistics.
@@ -41,16 +40,8 @@ const getRandomFact = async (req, res, next) => {
     }
 
     // Respond with the random fact
-    res.status(200).json(result);
-
-    // Update system statistics for facts
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { facts: 1 } });
+    return res.status(200).json(result);
   } catch (error) {
-    // Update system statistics for failed requests
-    await Stats.findOneAndUpdate(
-      { _id: 'systemstats' },
-      { $inc: { failed_requests: 1 } }
-    );
     return next(error);
   }
 };

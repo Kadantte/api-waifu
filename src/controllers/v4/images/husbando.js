@@ -61,16 +61,15 @@ const getHusbando = async (req, res, next) => {
       return next(createError(404, 'Could not find any matching husbando'));
     }
 
-    res.status(200).json(result);
+    return res.status(200).json(result);
 
     // Update system statistics for husbandos
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { husbandos: 1 } });
   } catch (error) {
     /**
      * Update system statistics for failed requests.
      * @type {Object}
      */
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { failed_requests: 1 } });
+
     next(error);
   }
 };

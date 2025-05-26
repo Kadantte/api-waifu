@@ -12,6 +12,12 @@ const UserSchema = new mongoose.Schema({
   _id: { type: String },
 
   /**
+   * User's username.
+   * @type {string}
+   *
+   */
+  username: { type: String },
+  /**
    * User's email address.
    * @type {string}
    * @required
@@ -36,6 +42,77 @@ const UserSchema = new mongoose.Schema({
    * @type {string}
    */
   token: { type: String },
+
+  /**
+   * Array to store the history of token resets, including timestamps, reason,
+   * executor, and old/new token values.
+   * @type {Array<{
+   *   timestamp: Date,
+   *   reason: string,
+   *   isForced: boolean,
+   *   executor: string,
+   *   old_token: string,
+   *   new_token: string,
+   *   expiry?: Date
+   * }>}
+   */
+  token_history: [
+    {
+      /**
+       * Unique identifier for the token reset entry.
+       * @type {string}
+       * @required
+       */
+      _id: { type: String, required: true },
+
+      /**
+       * Timestamp of the token reset.
+       * @type {Date}
+       * @default Date.now
+       */
+      timestamp: { type: Date, default: Date.now },
+
+      /**
+       * Optional expiry time if token is meant to be invalidated after a period.
+       * @type {Date}
+       */
+      expiry: { type: Date },
+
+      /**
+       * Reason for the token reset (e.g., "suspicious activity", "user request").
+       * @type {string}
+       */
+      reason: { type: String, default: 'Self Regenerated' },
+
+      /**
+       * Indicates whether the token reset was forced (e.g., by an admin).
+       * @type {boolean}
+       * @default false
+       */
+      isForced: { type: Boolean, default: false },
+
+      /**
+       * Information about the staff member or system who performed the reset.
+       * @type {string}
+       * @required
+       */
+      executor: { type: String, required: true, default: 'Self' },
+
+      /**
+       * The token before the reset.
+       * @type {string}
+       * @required
+       */
+      old_token: { type: String, required: true },
+
+      /**
+       * The token after the reset.
+       * @type {string}
+       * @required
+       */
+      new_token: { type: String, required: true },
+    },
+  ],
 
   /**
    * Flag indicating whether the user is banned.

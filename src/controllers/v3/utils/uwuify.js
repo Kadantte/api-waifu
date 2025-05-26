@@ -13,16 +13,7 @@ const getOwofiyText = async (req, res, next) => {
     res.status(200).json({
       text: uvuify(text),
     });
-
-    await Stats.findOneAndUpdate(
-      { _id: 'systemstats' },
-      { $inc: { uvuify: 1 } }
-    );
   } catch (error) {
-    await Stats.findOneAndUpdate(
-      { _id: 'systemstats' },
-      { $inc: { failed_requests: 1 } }
-    );
     next(error);
   }
 };

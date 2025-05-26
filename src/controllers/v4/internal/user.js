@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import Users from '../../../models/schemas/User.js';
+import UserNotification from '../../../models/schemas/UserNotification.js';
 import generateToken from '../../../modules/generateToken.js';
 
 /**
@@ -46,7 +47,11 @@ const processUserAction = async (req, res, next) => {
   }
 
   const userId = req.params.id;
-  const { action, amount, reason, executor, expiry } = req.body; // Extract fields from the request body
+  const { action, amount, reason, value, executor, expiry, old_token, new_token, isForced } = req.body; // Extract fields from the request body
+
+  if (!action) {
+    return res.status(400).json({ message: 'Action is required in body' }); // Action is required
+  }
 
   try {
     // Fetch user by ID
@@ -70,7 +75,7 @@ const processUserAction = async (req, res, next) => {
           _id: user.status_history.length + 1,
           timestamp: new Date(),
           reason: reason || 'Quota added',
-          value: `+${amount} quota`,
+          value: value || `+${amount} quota`,
           executor: executor || 'system',
         });
 
@@ -91,7 +96,7 @@ const processUserAction = async (req, res, next) => {
           _id: user.status_history.length + 1,
           timestamp: new Date(),
           reason: reason || 'Quota removed',
-          value: `-${amount} quota`,
+          value: value || `-${amount} quota`,
           executor: executor || 'system',
         });
 
@@ -154,6 +159,24 @@ const processUserAction = async (req, res, next) => {
         updatedUser = await user.save();
         break;
 
+      case 'addtokenhistory':
+        if (!old_token && !new_token) {
+          return res.status(400).json({ message: 'Old and new tokens are required' });
+        }
+        // Update status history
+        user.token_history.push({
+          _id: user.token_history.length + 1,
+          timestamp: new Date(),
+          reason: reason || 'Self Regenerated',
+          executor: executor || 'Self',
+          isForced: isForced || false,
+          old_token,
+          new_token,
+        });
+
+        updatedUser = await user.save();
+        break;
+
       default:
         return res.status(400).json({ message: `Invalid action: ${action}` });
     }
@@ -185,7 +208,7 @@ const processUserAction = async (req, res, next) => {
 const processUserSessionAndUpdate = async (req, res, next) => {
   try {
     const { headers, body } = req;
-    const { token, id, email, 'access-token': access_token } = body;
+    const { token, id, email, username, 'access-token': access_token } = body;
     const { key } = headers;
 
     // Validate access key
@@ -214,12 +237,21 @@ const processUserSessionAndUpdate = async (req, res, next) => {
       const newUser = {
         _id: id,
         email,
+        username,
         token: generatedToken,
         access_token,
         password: crypto.randomBytes(22).toString('base64'), // Generate a random password
       };
+      const newUserNotification = {
+        _id: `U${(await UserNotification.countDocuments()) + 1}`,
+        userId: id,
+        type: 'success',
+        message: `🎉 Welcome abroad!`,
+        expiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      };
 
       await Users.create(newUser);
+      await UserNotification.create(newUserNotification);
 
       return res.status(201).json({
         message: 'User created successfully',

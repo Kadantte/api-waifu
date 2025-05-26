@@ -15,11 +15,8 @@ const getRandomGlomp = async (req, res, next) => {
       return next(createError(404, 'Could not find any Glomp Gif'));
     }
 
-    res.status(200).json(result);
-
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { glomp: 1 } });
+    return res.status(200).json(result);
   } catch (error) {
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { failed_requests: 1 } });
     return next(error);
   }
 };

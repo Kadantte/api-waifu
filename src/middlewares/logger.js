@@ -1,25 +1,139 @@
+import Stats from '../models/schemas/Stat.js';
 import requestIp from 'request-ip';
 import { Webhook } from 'discord-webhook-node';
 
 const hook = new Webhook(process.env.DISCORD_WEBHOOK_URL);
 
-export const logIP = (req, res, next) => {
-  const auth = req.headers.authorization || 'Null Auth';
+const validEndpoints = new Set([
+  'husbando',
+  'waifu',
+  'angry',
+  'baka',
+  'bite',
+  'blush',
+  'bonk',
+  'bored',
+  'bully',
+  'bye',
+  'chase',
+  'cheer',
+  'cringe',
+  'cry',
+  'cuddle',
+  'dab',
+  'dance',
+  'die',
+  'disgust',
+  'facepalm',
+  'feed',
+  'glomp',
+  'happy',
+  'hi',
+  'highfive',
+  'hold',
+  'hug',
+  'kick',
+  'kill',
+  'kiss',
+  'laugh',
+  'lick',
+  'love',
+  'lurk',
+  'midfing',
+  'nervous',
+  'nom',
+  'nope',
+  'nuzzle',
+  'panic',
+  'pat',
+  'peck',
+  'poke',
+  'pout',
+  'punch',
+  'run',
+  'sad',
+  'shoot',
+  'shrug',
+  'sip',
+  'slap',
+  'sleepy',
+  'smile',
+  'smug',
+  'stab',
+  'stare',
+  'suicide',
+  'tease',
+  'think',
+  'thumbsup',
+  'tickle',
+  'triggered',
+  'wag',
+  'wave',
+  'wink',
+  'yes',
+  'membership',
+  'notification',
+  'pages',
+  'stats',
+  'user',
+  'fact',
+  'listTags',
+  'owoify',
+  'password',
+  'quote',
+  'uvuify',
+  'uwuify',
+]);
 
-  const log = `${new Date()} - STATUS=${res.statusCode} - METHOD=${req.method} - IP=${req.ip} | ${requestIp.getClientIp(
-    req,
-  )} - URL=${req.originalUrl} - ${auth}\n`;
+export const requestLogger = async (req, res, next) => {
+  try {
+    const auth = req.headers.authorization || 'Null Auth';
+    const log = `${new Date()} - STATUS=${res.statusCode} - METHOD=${req.method} - IP=${
+      req.ip
+    } | ${requestIp.getClientIp(req)} - URL=${req.originalUrl} - ${auth}\n`;
+    const now = new Date();
+    const dateKey = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
+    const pathSegments = req.path.split('/').filter(Boolean); // Remove empty segments
+    const endpoint = pathSegments[2];
 
-  const IMAGE_URL = 'https://homepages.cae.wisc.edu/~ece533/images/airplane.png';
-  hook.setUsername('API Logger');
-  hook.setAvatar(IMAGE_URL);
-  hook.send(`\`${log}\``);
+    const IMAGE_URL = 'https://i.imgur.com/c55SNmu.png';
+    hook.setUsername('API Logger');
+    hook.setAvatar(IMAGE_URL);
+    hook.send(`\`${log}\``);
+    console.log(log);
 
-  // fs.appendFile('./logs/ip-logs.log', log, (err) => {
-  //   if (err) throw err;
-  // });
+    // Ignore invalid endpoints
+    if (!validEndpoints.has(endpoint)) return next();
 
-  console.log(log);
+    res.on('finish', async () => {
+      const failedStatusCodes = new Set([400, 401, 402, 404, 502]);
+      const isSuccess = res.statusCode >= 200 && res.statusCode < 400;
+      const isFailure = failedStatusCodes.has(res.statusCode);
 
-  next();
+      const update = {
+        $inc: {
+          total_requests: 1,
+          [`daily.${dateKey}.total_requests`]: 1,
+          [`daily.${dateKey}.${isSuccess ? 'success_requests' : 'failed_requests'}`]: 1,
+          [`daily.${dateKey}.endpoints.${endpoint}`]: 1,
+
+          // Increment the all-time count for this endpoint
+          [`endpoints.${endpoint}`]: 1,
+        },
+      };
+      // Increment failed_requests only for specific failure codes
+      if (isFailure) {
+        update.$inc.failed_requests = 1;
+      }
+
+      // console.log(update);
+
+      await Stats.findOneAndUpdate({ _id: 'system' }, update, { upsert: true });
+    });
+
+    next();
+  } catch (error) {
+    console.error('Request logging failed:', error);
+    next();
+  }
 };

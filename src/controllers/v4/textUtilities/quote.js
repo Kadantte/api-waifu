@@ -54,19 +54,18 @@ const getQuote = async (req, res, next) => {
      * Respond with the random quote
      * @type {Object}
      */
-    res.status(200).json(result);
+    return res.status(200).json(result);
 
     /**
      * Update system statistics for quotes
      * @type {Object}
      */
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { quotes: 1 } });
   } catch (error) {
     /**
      * Update system statistics for failed requests
      * @type {Object}
      */
-    await Stats.findOneAndUpdate({ _id: 'systemstats' }, { $inc: { failed_requests: 1 } });
+
     return next(error);
   }
 };
